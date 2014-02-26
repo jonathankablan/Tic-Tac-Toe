@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Tic Tac Toe</title>
+		<meta charset="UTF-8" />
+		<style>
+			#game{
+				width: 250px;
+				height: 250px;
+				background-color: #2a2a2a;
+				border: 1px solid #555;
+				margin: 50px auto;
+				padding: 10px;
+				overflow: auto;
+				box-shadow: 3px 8px 3px #bbb;
+			}
+
+			#game div{
+				margin: 0px auto;
+				clear: both;
+				width: 190px;
+			}
+
+			#game button{
+				display: block;
+				width: 50px;
+				height: 50px;
+				float: left;
+				margin: 5px;
+				font-weight: bold;
+			}
+
+			#gameActionDisplay{
+				padding: 20px 10px;
+				color: #fff;
+			}
+
+			#game a{
+				color: orange;
+			}
+
+		</style>
+	</head>
+	<body>
+		
+		<div id="game">
+			<div>
+				<button></button>
+				<button></button>
+				<button></button>
+			</div>
+
+			<div>
+				<button></button>
+				<button></button>
+				<button></button>
+			</div>
+
+			<div>
+				<button></button>
+				<button></button>
+				<button></button>
+			</div>
+
+			<div id="gameActionDisplay"></div>
+		</div>
+
+
+		<script>
+			var Display = function(displayElement){
+				var display = displayElement;
+
+				function setText(message){
+					display.innerHTML = message;
+				}
+
+				return {setMessage: setText};
+			};
+
+
+			function isValid(button){
+				return button.innerHTML.length == 0;
+			}
+
+			function setMark(btn, mark){
+				btn.innerHTML = mark;
+			}
+
+			function checkForWinner(squares, players, currentTurn){
+				if (squares[0].innerHTML == players[currentTurn] &&
+				    squares[1].innerHTML == players[currentTurn] &&
+				    squares[2].innerHTML == players[currentTurn])
+				    return true;
+
+				if (squares[3].innerHTML == players[currentTurn] &&
+				    squares[4].innerHTML == players[currentTurn] &&
+				    squares[5].innerHTML == players[currentTurn])
+				    return true;
+
+				if (squares[6].innerHTML == players[currentTurn] &&
+				    squares[7].innerHTML == players[currentTurn] &&
+				    squares[8].innerHTML == players[currentTurn])
+				    return true;
+
+				if (squares[0].innerHTML == players[currentTurn] &&
+				    squares[3].innerHTML == players[currentTurn] &&
+				    squares[6].innerHTML == players[currentTurn])
+				    return true;
+
+				if (squares[1].innerHTML == players[currentTurn] &&
+				    squares[4].innerHTML == players[currentTurn] &&
+				    squares[7].innerHTML == players[currentTurn])
+				    return true;
+
+				if (squares[2].innerHTML == players[currentTurn] &&
+				    squares[5].innerHTML == players[currentTurn] &&
+				    squares[8].innerHTML == players[currentTurn])
+				    return true;
+
+				if (squares[0].innerHTML == players[currentTurn] &&
+				    squares[4].innerHTML == players[currentTurn] &&
+				    squares[8].innerHTML == players[currentTurn])
+				    return true;
+
+				if (squares[2].innerHTML == players[currentTurn] &&
+				    squares[4].innerHTML == players[currentTurn] &&
+				    squares[6].innerHTML == players[currentTurn])
+				    return true;
+				
+			}
+
+			function isBoardFull(squares){
+				for(var i = 0, len = squares.length; i < len;  i++){
+					if(squares[i].innerHTML.length == 0)
+						return false;
+				}
+
+				return true;
+			}
+
+			function main(){
+				var squares = document.querySelectorAll("#game button");
+				var players = ["X", "O"];
+				var currentTurn = 0;
+				var isGameOver = false;
+				var display = new Display(document.querySelector("#gameActionDisplay"));
+
+				display.setMessage("Le jeu peut démarrer.<br/>Joueur " + players[currentTurn] + " c'est votre tour.");
+
+				for(var i = 0, len = squares.length; i < len;  i++){
+					squares[i].addEventListener("click", function(){
+						if(isGameOver)
+							return;
+
+						if(!isValid(this)){
+							display.setMessage("Déplacement invalide :(");
+						} else {
+							setMark(this, players[currentTurn]);
+
+							isGameOver = checkForWinner(squares, players, currentTurn);
+
+							//Game is over (someone won)
+							if(isGameOver){
+								display.setMessage("Joueur " + players[currentTurn] + ' a gagné!<br/><a href="tic_tac_toe.html">Rejouer</a>');
+								return;
+							}
+
+							//Game is over (Draw)
+							if(isBoardFull(squares)){
+								display.setMessage('Match nul!<br/><a href="tic_tac_toe.html">Rejouer</a>');
+								return;
+							}
+
+							//Game is not over yet
+							//currentTurn++;
+							//currentTurn = currentTurn % 2;
+							currentTurn = currentTurn ^ 1;
+
+							display.setMessage("Joueur " + players[currentTurn] + " à votre tour !");
+
+						}
+					});
+				}
+			}
+
+			main();
+		</script>
+	</body>
+</html>
